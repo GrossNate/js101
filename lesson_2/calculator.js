@@ -3,10 +3,14 @@
 // Ask the user for an operation to perform.
 // Perform the operation on the two numbers.
 // Print the result to the terminal.
-const messages = require('./calculator-messages.json');
+const MESSAGES = require('./calculator-messages.json');
 const readline = require('readline-sync');
 
-const language = 'ru';
+const LANGUAGE = 'en';
+
+function message(whichMessage) {
+  return MESSAGES[whichMessage][LANGUAGE];
+}
 
 function prompt(message) {
   console.log(`=> ${message}`);
@@ -16,30 +20,7 @@ function invalidNumber(number) {
   return number.trimStart() === '' || Number.isNaN(Number(number));
 }
 
-function calculate() {
-  prompt(messages['ask first number'][language]);
-  let number1 = readline.question();
-
-  while (invalidNumber(number1)) {
-    prompt(messages['invalid number'][language]);
-    number1 = readline.question();
-  }
-
-  prompt(messages['ask second number'][language]);
-  let number2 = readline.question();
-
-  while (invalidNumber(number2)) {
-    prompt(messages['invalid number'][language]);
-    number2 = readline.question();
-  }
-
-  prompt(messages['choose operation'][language]);
-  let operation = readline.question();
-
-  while (!['1', '2', '3', '4'].includes(operation)) {
-    prompt(messages['invalid operation'][language]);
-    operation = readline.question();
-  }
+function performCalculation(number1, number2, operation) {
   let output;
   switch (operation) {
     case '1':  // '1' represents addition
@@ -55,21 +36,42 @@ function calculate() {
       output = Number(number1) / Number(number2);
       break;
   }
-
-  prompt(`${messages['result is'][language]} ${output}`);
+  return output;
 }
 
 let running = true;
-prompt(messages['welcome'][language]);
+prompt(message('welcome'));
 
 while (running) {
-  calculate();
-  prompt(messages['run again'][language]);
+  prompt(message('ask first number'));
+  let number1 = readline.question();
+
+  while (invalidNumber(number1)) {
+    prompt(message('invalid number'));
+    number1 = readline.question();
+  }
+
+  prompt(message('ask second number'));
+  let number2 = readline.question();
+
+  while (invalidNumber(number2)) {
+    prompt(message('invalid number'));
+    number2 = readline.question();
+  }
+
+  prompt(message('choose operation'));
+  let operation = readline.question();
+
+  while (!['1', '2', '3', '4'].includes(operation)) {
+    prompt(message('invalid operation'));
+    operation = readline.question();
+  }
+  prompt(`${message('result is')} ${performCalculation(number1, number2, operation)}`);
+  prompt(message('run again'));
   let runAgain = readline.question();
-  while (![messages['run again y'][language], messages['run again n'][language], messages['run again y'][language].toUpperCase(), messages['run again n'][language].toUpperCase()].includes(runAgain)) {
-    prompt(messages['invalid run again'][language]);
+  while (![message('run again y'), message('run again n'), message('run again y').toUpperCase(), message('run again n').toUpperCase()].includes(runAgain)) {
+    prompt(message('invalid run again'));
     runAgain = readline.question();
   }
- 
-  running = (runAgain.toLowerCase() === messages['run again y'][language]);
+  running = (runAgain.toLowerCase() === message('run again y'));
 }
