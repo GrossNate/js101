@@ -1,0 +1,46 @@
+{
+  "welcome": {
+    "en": "Welcome to Calculator!",
+    "ru": "Добро пожаловать в Калькулятор!"
+  },
+  "ask first number": {
+    "en": "What's the first number?",
+    "ru": "Какое первое число?"
+  },
+  "ask second number": {
+    "en": "What's the second number?",
+    "ru": "Какое второе число?"
+  },
+  "invalid number": {
+    "en": "Hmm... that doesn't look like a valid number.",
+    "ru": "Хм . . . это не похоже на число."
+  },
+  "choose operation": {
+    "en": "What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "ru": "Какой расчет вы хотите сделать?\n1) Добавление 2) Вычитание 3) Умножение 4) Деление"
+  },
+  "invalid operation": {
+    "en": "Must choose 1, 2, 3, or 4",
+    "ru": "Вы должны выбрать 1, 2, 3 или 4."
+  },
+  "result is": {
+    "en": "The result is:",
+    "ru": "Результат:"
+  },
+  "run again": {
+    "en": "Would you like to perform another calculation? (Y/N)",
+    "ru": "Хотите выполнить еще один расчет? (Д/Н)"
+  },
+  "invalid run again": {
+    "en": "Answer must be Y or N. Would you like to perform another calculation?",
+    "ru": "Ваш ответ должен быть «Д» или «Н». Вы хотите выполнить еще один расчет?"
+  },
+  "run again y": {
+    "en": "y",
+    "ru": "д"
+  },
+  "run again n": {
+    "en": "n",
+    "ru": "н"
+  }
+}

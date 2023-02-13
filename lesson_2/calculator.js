@@ -3,8 +3,10 @@
 // Ask the user for an operation to perform.
 // Perform the operation on the two numbers.
 // Print the result to the terminal.
-
+const messages = require('./calculator-messages.json');
 const readline = require('readline-sync');
+
+const language = 'ru';
 
 function prompt(message) {
   console.log(`=> ${message}`);
@@ -15,27 +17,27 @@ function invalidNumber(number) {
 }
 
 function calculate() {
-  prompt("What's the first number?");
+  prompt(messages['ask first number'][language]);
   let number1 = readline.question();
 
   while (invalidNumber(number1)) {
-    prompt("Hmm... that doesn't look like a valid number.");
+    prompt(messages['invalid number'][language]);
     number1 = readline.question();
   }
 
-  prompt("What's the second number?");
+  prompt(messages['ask second number'][language]);
   let number2 = readline.question();
 
   while (invalidNumber(number2)) {
-    prompt("Hmm... that doesn't look like a valid number.");
+    prompt(messages['invalid number'][language]);
     number2 = readline.question();
   }
 
-  prompt('What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide');
+  prompt(messages['choose operation'][language]);
   let operation = readline.question();
 
   while (!['1', '2', '3', '4'].includes(operation)) {
-    prompt('Must choose 1, 2, 3, or 4');
+    prompt(messages['invalid operation'][language]);
     operation = readline.question();
   }
   let output;
@@ -54,20 +56,20 @@ function calculate() {
       break;
   }
 
-  prompt(`The result is: ${output}`);
+  prompt(`${messages['result is'][language]} ${output}`);
 }
 
 let running = true;
-prompt('Welcome to Calculator!');
+prompt(messages['welcome'][language]);
 
 while (running) {
   calculate();
-  prompt('Would you like to perform another calculation? (Y/N)');
+  prompt(messages['run again'][language]);
   let runAgain = readline.question();
-  while (!['Y', 'N', 'y', 'n'].includes(runAgain)) {
-    prompt('Answer must be Y or N. Would you like to perform another calculation?');
+  while (![messages['run again y'][language], messages['run again n'][language], messages['run again y'][language].toUpperCase(), messages['run again n'][language].toUpperCase()].includes(runAgain)) {
+    prompt(messages['invalid run again'][language]);
     runAgain = readline.question();
   }
  
-  running = (runAgain.toLowerCase() === 'y');
+  running = (runAgain.toLowerCase() === messages['run again y'][language]);
 }
