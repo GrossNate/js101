@@ -116,7 +116,7 @@ function formatChoices() {
  * @param {string[]} possibleChoices - An array of the valid choices.
  * @returns {string}
  */
-function getInfo(question, possibleChoices) {
+function getUserInput(question, possibleChoices) {
   prompt(question);
   let response = readline.question().toLowerCase();
   while (!possibleChoices.includes(response)) {
@@ -131,10 +131,12 @@ let isBestOfFiveMode = false;
 let continuePlaying = true;
 let score;
 
+// Clear screen and welcome user.
 console.clear();
+prompt('Welcome to ' + Array.from(CHOICES.keys()).map(word => word[0].toUpperCase() + word.slice(1)).join(", "));
 
 // Determine if we're playing best-of-five.
-let bestOfFiveAnswer = getInfo(
+let bestOfFiveAnswer = getUserInput(
   "Would you like to play in best-of-five mode? (y/n)",
   ['y', 'n']
 );
@@ -152,7 +154,7 @@ while (continuePlaying) {
   if (!isBestOfFiveMode) console.clear();
 
   // Get the user's choice.
-  let choice = getInfo(
+  let choice = getUserInput(
     `Choose one: ${formatChoices()}`,
     Array.from(INPUT_CHOICES.keys())
   );
@@ -183,7 +185,7 @@ while (continuePlaying) {
     }
   } else {
     // Not playing best-of-five, we ask if user wants to play again.
-    let playAgain = getInfo(
+    let playAgain = getUserInput(
       'Do you want to play again (y/n)?',
       ['y', 'n']
     );
