@@ -167,6 +167,7 @@ while (continuePlaying) {
   displayOutcome(choice, computerChoice, winner);
 
   if (isBestOfFiveMode) {
+    // Playing best-of-five, we track the score and determine when to stop.
     if (winner === 'user') {
       score.user += 1;
     } else if (winner === 'computer') {
@@ -181,6 +182,7 @@ while (continuePlaying) {
       continuePlaying = false;
     }
   } else {
+    // Not playing best-of-five, we ask if user wants to play again.
     let playAgain = getInfo(
       'Do you want to play again (y/n)?',
       ['y', 'n']
