@@ -1,4 +1,8 @@
 const readline = require('readline-sync');
+
+// To add or remove choices to the game, just add/remove and edit the CHOICES
+// map. The key is the choice and the value is an array of the other choices
+// that the key beats.
 const CHOICES = new Map();
 CHOICES.set("rock", ["scissors", "lizard"]);
 CHOICES.set("paper", ["rock", "spock"]);
@@ -133,7 +137,8 @@ let score;
 
 // Clear screen and welcome user.
 console.clear();
-prompt('Welcome to ' + Array.from(CHOICES.keys()).map(word => word[0].toUpperCase() + word.slice(1)).join(", "));
+prompt('Welcome to ' +
+  Array.from(CHOICES.keys()).map(word => word[0].toUpperCase() + word.slice(1)).join(", "));
 
 // Determine if we're playing best-of-five.
 let bestOfFiveAnswer = getUserInput(
