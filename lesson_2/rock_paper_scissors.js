@@ -1,5 +1,7 @@
 const readline = require('readline-sync');
 
+const NUM_ROUNDS = 3;
+
 // To add or remove choices to the game, just add/remove and edit the CHOICES
 // map. The key is the choice and the value is an array of the other choices
 // that the key beats.
@@ -14,9 +16,8 @@ CHOICES.set("spock", ["rock", "scissors"]);
 // to the shortest possible number of characters while avoiding collisions.
 const INPUT_CHOICES = new Map();
 CHOICES.forEach((_v, key, _m) => INPUT_CHOICES.set(key, key));
-findMinDistinctChars(Array.from(CHOICES.keys())).forEach((value, key, _) => {
-  INPUT_CHOICES.set(key.slice(0,value), key);
-});
+findMinDistinctChars(Array.from(CHOICES.keys()))
+  .forEach((value, key, _) => INPUT_CHOICES.set(key.slice(0,value), key));
 
 /**
  * Simply outputs to the console the message, prefixed with a prompt.
@@ -75,14 +76,10 @@ function determineWinner(userChoice, computerChoice) {
 }
 
 /**
- * Displays a confirmation of what the choices were and then who won (or if
- * there was a tie).
- * @param {string} choice
- * @param {string} computerChoice
+ * Displays who won (or if there was a tie).
  * @param {string} outcome
  */
-function displayOutcome(choice, computerChoice, outcome) {
-  prompt(`You chose ${choice}, computer chose ${computerChoice}`);
+function displayOutcome(outcome) {
   switch (outcome) {
     case 'user':
       prompt('You win!');
@@ -108,9 +105,9 @@ function displayOutcome(choice, computerChoice, outcome) {
  */
 function formatChoices() {
   let formattedChoices = [];
-  findMinDistinctChars(Array.from(CHOICES.keys())).forEach((value, key, _) => {
-    formattedChoices.push(`${key} (${key.slice(0,value)})`);
-  });
+  findMinDistinctChars(Array.from(CHOICES.keys()))
+    .forEach((value, key, _) => formattedChoices
+      .push(`${key} (${key.slice(0,value)})`));
   return formattedChoices.join(', ');
 }
 
@@ -130,34 +127,11 @@ function getUserInput(question, possibleChoices) {
   return response;
 }
 
-// The main body of the program.
-let isBestOfFiveMode = false;
-let continuePlaying = true;
-let score;
-
-// Clear screen and welcome user.
-console.clear();
-prompt('Welcome to ' +
-  Array.from(CHOICES.keys()).map(word => word[0].toUpperCase() + word.slice(1)).join(", "));
-
-// Determine if we're playing best-of-five.
-let bestOfFiveAnswer = getUserInput(
-  "Would you like to play in best-of-five mode? (y/n)",
-  ['y', 'n']
-);
-if (bestOfFiveAnswer === 'y') {
-  isBestOfFiveMode = true;
-  score = {
-    user: 0,
-    computer: 0
-  };
-}
-
-// Play the game.
-while (continuePlaying) {
-  // If playing best-of-five we want user to see the history, so don't clear.
-  if (!isBestOfFiveMode) console.clear();
-
+/**
+ * Plays a single round of the game and returns the outcome.
+ * @returns {string} representing the winner of the round.
+ */
+function playOneRound() {
   // Get the user's choice.
   let choice = getUserInput(
     `Choose one: ${formatChoices()}`,
@@ -169,31 +143,74 @@ while (continuePlaying) {
   let randomIndex = Math.floor(Math.random() * CHOICES.size);
   let computerChoice = Array.from(CHOICES.keys())[randomIndex];
 
-  // Determine the winner of a single round and display that.
-  let winner = determineWinner(choice, computerChoice);
-  displayOutcome(choice, computerChoice, winner);
+  prompt(`You chose ${choice}, computer chose ${computerChoice}`);
 
-  if (isBestOfFiveMode) {
-    // Playing best-of-five, we track the score and determine when to stop.
-    if (winner === 'user') {
-      score.user += 1;
-    } else if (winner === 'computer') {
-      score.computer += 1;
-    }
-    prompt(`The best of five score is user: ${score.user}, computer: `
-      + `${score.computer}`);
-    if (score.user >= 3 || score.computer >= 3) {
+  return determineWinner(choice, computerChoice);
+}
+
+// This is a scorecard object to track game state.
+const scorecard = {
+  userScore: 0,
+  computerScore: 0,
+  /**
+   * Increments either user or computer score and ignores other input.
+   * @param {string} whichPlayer - Either 'user' or 'computer'.
+   */
+  incrementScore: function (whichPlayer) {
+    if (whichPlayer === 'user') this.userScore += 1;
+    else if (whichPlayer === 'computer') this.computerScore += 1;
+  },
+  /**
+   * Checks if either user has scored the NUM_ROUNDS necessary to win.
+   * @returns {boolean}
+   */
+  isMatchOver: function () {
+    return (this.userScore >= NUM_ROUNDS || this.computerScore >= NUM_ROUNDS);
+  }
+};
+
+// The main body of the program.
+
+// Clear screen and welcome user.
+console.clear();
+prompt('Welcome to ' + Array
+  .from(CHOICES.keys())
+  .map(word => word[0].toUpperCase() + word.slice(1))
+  .join(", "));
+
+// Determine if we're playing best-of-five.
+const bestOfFiveAnswer = getUserInput(
+  "Would you like to play in best-of-five mode? (y/n)",
+  ['y', 'n']
+);
+
+if (bestOfFiveAnswer === 'y') {
+  while (true) {
+    let winner = playOneRound();
+    displayOutcome(winner);
+
+    scorecard.incrementScore(winner);
+
+    prompt(`The best of five score is user: ${scorecard.userScore}, computer: `
+      + `${scorecard.computerScore}`);
+    if (scorecard.isMatchOver()) {
       prompt(`The match is over. `
-        + `${(score.computer > score.user) ? 'The computer is' : 'You are'} `
-        + `the winner!`);
-      continuePlaying = false;
+        + `${(scorecard.computerScore > scorecard.userScore) ? 'The computer is'
+          : 'You are'} ` + `the winner!`);
+      break;
     }
-  } else {
-    // Not playing best-of-five, we ask if user wants to play again.
+  }
+} else {
+  while (true) {
+    console.clear();
+
+    let winner = playOneRound();
+    displayOutcome(winner);
+
     let playAgain = getUserInput(
       'Do you want to play again (y/n)?',
       ['y', 'n']
     );
-    if (playAgain !== 'y') continuePlaying = false;
+    if (playAgain !== 'y') break;
   }
 }
