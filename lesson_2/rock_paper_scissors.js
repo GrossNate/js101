@@ -148,27 +148,6 @@ function playOneRound() {
   return determineWinner(choice, computerChoice);
 }
 
-// This is a scorecard object to track game state.
-const scorecard = {
-  userScore: 0,
-  computerScore: 0,
-  /**
-   * Increments either user or computer score and ignores other input.
-   * @param {string} whichPlayer - Either 'user' or 'computer'.
-   */
-  incrementScore: function (whichPlayer) {
-    if (whichPlayer === 'user') this.userScore += 1;
-    else if (whichPlayer === 'computer') this.computerScore += 1;
-  },
-  /**
-   * Checks if either user has scored the NUM_ROUNDS necessary to win.
-   * @returns {boolean}
-   */
-  isMatchOver: function () {
-    return (this.userScore >= NUM_ROUNDS || this.computerScore >= NUM_ROUNDS);
-  }
-};
-
 // The main body of the program.
 
 // Clear screen and welcome user.
@@ -185,6 +164,26 @@ const bestOfFiveAnswer = getUserInput(
 );
 
 if (bestOfFiveAnswer === 'y') {
+  // This is a scorecard object to track game state.
+  const scorecard = {
+    userScore: 0,
+    computerScore: 0,
+    /**
+     * Increments either user or computer score and ignores other input.
+     * @param {string} whichPlayer - Either 'user' or 'computer'.
+     */
+    incrementScore: function (whichPlayer) {
+      if (whichPlayer === 'user') this.userScore += 1;
+      else if (whichPlayer === 'computer') this.computerScore += 1;
+    },
+    /**
+     * Checks if either user has scored the NUM_ROUNDS necessary to win.
+     * @returns {boolean}
+     */
+    isMatchOver: function () {
+      return (this.userScore >= NUM_ROUNDS || this.computerScore >= NUM_ROUNDS);
+    }
+  };
   while (true) {
     let winner = playOneRound();
     displayOutcome(winner);
